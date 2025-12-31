@@ -1,0 +1,7 @@
+ABCD,Target_URL,License_Claim,Traffic_Source,Risk_Status,Date_Added
+A101,[URL],FALSE,Organic Search,Low,15/12/2025
+B202,[URL],TRUE,Direct Traffic,Medium,16/12/2025
+C303,[URL],FALSE,Referral Link,High,17/12/2025
+D404,[URL],TRUE,Paid Ad,Low,18/12/2025
+E505,[URL],FALSE,Social Media,Medium,19/12/2025
+F606,[URL],TRUE,Email Marketing,High,20/12/2025
