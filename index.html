@@ -123,13 +123,27 @@
     .scroll{font-family:"Raleway", sans-serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7a838e}
 
     .spacer{height:260vh}
-    .after{position:relative;margin-top:180vh;width:min(1240px, calc(100% - 48px));margin-left:auto;margin-right:auto;padding:36px;display:grid;grid-template-columns:1fr 1fr;gap:28px;background:rgba(255,255,255,.54);backdrop-filter:blur(14px);border:1px solid rgba(18,21,27,.06);border-radius:34px;box-shadow:0 24px 60px rgba(18,21,27,.08);z-index:2}
-    .panel{padding:28px;border-radius:28px;background:linear-gradient(180deg, rgba(255,255,255,.74), rgba(245,239,230,.72));border:1px solid rgba(18,21,27,.05);box-shadow:0 14px 38px rgba(18,21,27,.06)}
-    .panel h3{margin:0 0 10px;font-family:"Cormorant Garamond", serif;font-size:2rem;font-weight:600;letter-spacing:-.02em}
-    .panel p{margin:0;color:#5e6673;line-height:1.8;max-width:34ch}
+    .after{position:relative;margin-top:180vh;width:min(1240px, calc(100% - 48px));margin-left:auto;margin-right:auto;padding:36px;display:grid;grid-template-columns:1fr 1fr;gap:28px;background:rgba(255,255,255,.52);backdrop-filter:blur(16px);border:1px solid rgba(95,125,110,.16);border-radius:34px;box-shadow:0 24px 60px rgba(18,21,27,.08);z-index:2}
+    .panel{padding:28px;border-radius:28px;background:linear-gradient(180deg, rgba(255,255,255,.82), rgba(245,239,230,.74));border:1px solid rgba(95,125,110,.14);box-shadow:0 14px 38px rgba(18,21,27,.06)}
+    .panel h3{margin:0 0 10px;font-family:"Cormorant Garamond", serif;font-size:2rem;font-weight:600;letter-spacing:-.02em;color:#5f7d6e}
+    .panel p{margin:0;color:#6b7f73;line-height:1.9;max-width:38ch}
+
+    .vesta-sequence .panel{
+      opacity:0;
+      transform:translateY(42px) scale(.975);
+      filter:blur(7px);
+    }
+    .vesta-sequence .panel.is-visible{
+      animation:vestaPanelIn 1.35s cubic-bezier(.22, .65, .2, 1) forwards;
+      animation-delay:var(--delay, 0s);
+    }
 
     @keyframes flow{0%{transform:translate(-14%, -50%);opacity:0}18%{opacity:1}72%{opacity:1}100%{transform:translate(560%, -50%);opacity:0}}
     @keyframes twinkle{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.4}50%{transform:translate(-50%,-50%) scale(1.5);opacity:1}}
+    @keyframes vestaPanelIn{
+      0%{opacity:0;transform:translateY(42px) scale(.975);filter:blur(7px)}
+      100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+    }
 
     @media (max-width: 900px){.world{ width:95vw; }.core{ width:150px; height:150px; }.ripple{ width:180px; height:180px; }.after{ grid-template-columns:1fr; width:min(100% - 24px, 1240px); padding:20px; }}
     @media (prefers-reduced-motion: reduce){
@@ -163,9 +177,26 @@
 
     <div class="spacer"></div>
 
-    <section class="after">
-      <div class="panel"><h3>Infrastructure of Trust</h3><p>A cinematic trust layer designed to establish authority before explanation, with a luminous core, emergent identity, and controlled motion logic.</p></div>
-      <div class="panel"><h3>Upstream Intelligence</h3><p>An intelligence field that signals before impact, responds to attention without noise, and reveals meaning through breath, ripple, and scroll.</p></div>
+    <section class="after vesta-sequence" id="vesta-sequence">
+      <div class="panel">
+        <h3>The Era of the Paper Bridge</h3>
+        <p>The administrative trust of the digital age is a paper bridge suspended over a canyon of fire. While hostile actors harvest global data in anticipation of the 2028 quantum dawn, the foundations of national grids and central banks remain exposed to a silent failure. In the gaps between billions of transactions, autonomous AI swarms and synthetic fraud are rupturing the very concept of value.</p>
+      </div>
+
+      <div class="panel">
+        <h3>The Vanguard of Reality</h3>
+        <p>Vesta Unity stands at the boundary where the human meets the digital, reclaiming the dignity of the real world from the clutter of the synthetic. A physical manifestation of pure mathematics — designed for a post-quantum reality.</p>
+      </div>
+
+      <div class="panel">
+        <h3>From Hope to Certainty</h3>
+        <p>The unreliable handshake of legacy systems is replaced by measurement. Embedded directly into silicon, no artificial system can replicate what is verified. We transition the world from speculative security to mathematical certainty.</p>
+      </div>
+
+      <div class="panel">
+        <h3>The Architecture of Legacy</h3>
+        <p>This is not a product. It is infrastructure. A sovereign layer designed to endure — where capital, trust, and reality converge. The result is inevitable: a permanent foundation for the digital world.</p>
+      </div>
     </section>
   </main>
 
@@ -176,6 +207,8 @@
     const streams = Array.from(document.querySelectorAll('.stream'));
     const focusNodes = Array.from(document.querySelectorAll('.focus-node'));
     const streamBaseAngles = [12,58,112,186,248,312];
+    const vestaSequence = document.getElementById('vesta-sequence');
+    const sequencePanels = Array.from(document.querySelectorAll('.vesta-sequence .panel'));
 
     let start = null;
     let lastRippleIndex = 0;
@@ -240,6 +273,27 @@
       });
     }
 
+
+    function initVestaSequence(){
+      if (!vestaSequence || !sequencePanels.length) return;
+      sequencePanels.forEach((panel, idx) => panel.style.setProperty('--delay', `${(idx * 2.5).toFixed(1)}s`));
+
+      const reveal = () => sequencePanels.forEach(panel => panel.classList.add('is-visible'));
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        reveal();
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        const active = entries.some(entry => entry.isIntersecting);
+        if (!active) return;
+        reveal();
+        observer.disconnect();
+      }, { threshold: 0.28, rootMargin: '0px 0px -8% 0px' });
+
+      observer.observe(vestaSequence);
+    }
+
     function getScrollProgress(){
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       return clamp(window.scrollY / maxScroll, 0, 1);
@@ -286,6 +340,7 @@
       if (t) updatePointer(t.clientX, t.clientY);
     }, {passive:true});
 
+    initVestaSequence();
     requestAnimationFrame(animate);
   </script>
 </body>
